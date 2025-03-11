@@ -36,3 +36,9 @@
 
 # VSCODE
 .vscode
+
+# CMake build directory
+build/
+
+# Solution files
+*.sln
