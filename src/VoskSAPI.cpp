@@ -6,7 +6,7 @@
 
 VoskSAPI::VoskSAPI() {
 	// Initializing the recognizer with the model path and sample rate
-	VoskModel* model = vosk_model_new("models");
+	VoskModel* model = vosk_model_new("model");
 	if (!model) {
 		std::cerr << "Failed to load model!" << std::endl;
 		return;
@@ -26,10 +26,17 @@ VoskSAPI::~VoskSAPI() {
 }
 
 void VoskSAPI::ProcessAudio(const std::vector<uint8_t>& audioData) {
+	if (audioData.empty()) {
+		std::cerr << "Error: Received empty audio data!\n";
+		return;
+	}
+	
 	if (recognizer) {
 		if (vosk_recognizer_accept_waveform(recognizer, (const char*)audioData.data(), audioData.size())) {
 			const char* result = vosk_recognizer_result(recognizer);
 			std::cout << "Recognized: " << result << std::endl;
+		} else {
+			std::cout << "Partial: " << vosk_recognizer_partial_result(recognizer) << std::endl;
 		}
 	}
 }
